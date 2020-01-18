@@ -38,13 +38,6 @@ jobs:
         run: |
           docker rm -f ${{ steps.prepare.outputs.container_name }} > /dev/null 2>&1 || true
           docker run -d --name ${{ steps.prepare.outputs.container_name }} \
-        #   --volume=/var/run/docker.sock:/var/run/docker.sock:ro \
-        #   --volume=/:/rootfs:ro \
-        #   --volume=/var/run:/var/run:ro \
-        #   --volume=/sys:/sys:ro \
-        #   --volume=/var/lib/docker/:/var/lib/docker:ro \
-        #   --volume=/dev/disk/:/dev/disk:ro \
-        #   --publish=8080:8080 \
           ${{ steps.prepare.outputs.build_tag }}
       -
         name: Test run
