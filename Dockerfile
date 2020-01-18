@@ -3,9 +3,10 @@ FROM golang:alpine as builder
 
 RUN apk update && apk add --no-cache git && \
     apk add --no-cache make && \
-    apk add --no-cache bash
-#    apk add --no-cache gcc && \
-#    apk add --no-cache libc-dev 
+    apk add --no-cache bash && \
+    apk add --no-cache gcc && \
+    apk add --no-cache libc-dev && \
+    apk add --no-cache binutils-gold
 
 RUN mkdir -p $GOPATH/src/github.com/elastic/beats && \
     git clone --branch v7.4.1 --depth 1 https://github.com/elastic/beats.git $GOPATH/src/github.com/elastic/beats
@@ -14,4 +15,11 @@ RUN make
 
 ## Run stage - Install dependencies and copy filebeat from builder
 FROM alpine
-TODO
+
+RUN mkdir -p /usr/share/filebeat
+
+COPY --from=builder /go/src/github.com/elastic/beats/filebeat /usr/share/filebeat/filebeat
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN ["chmod", "+x", "/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh" ]
+CMD [ "/usr/share/filebeat/filebeat" ]
