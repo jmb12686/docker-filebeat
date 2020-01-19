@@ -38,7 +38,14 @@ jobs:
         run: |
           docker rm -f ${{ steps.prepare.outputs.container_name }} > /dev/null 2>&1 || true
           docker run -d --name ${{ steps.prepare.outputs.container_name }} \
-          ${{ steps.prepare.outputs.build_tag }}
+          --user=root \
+          --volume="./config/example/filebeat.yml:/usr/share/filebeat/filebeat.yml" \
+          --volume="/var/lib/docker/containers:/var/lib/docker/containers:ro" \
+          --volume="/var/run/docker.sock:/var/run/docker.sock:ro" \
+          -e ELASTICSEARCH_HOST=localhost \
+          -e KIBANA_HOST=localhost \
+          ${{ steps.prepare.outputs.build_tag }} \
+          --strict.perms=false
       -
         name: Test run
         run: |

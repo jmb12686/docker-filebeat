@@ -34,14 +34,52 @@ docker buildx build --platform linux/arm -t jmb12686/filebeat:latest --push .
 
 ## How to Run
 
-```bash
-sudo docker run --rm -v /home/pi/raspi-docker-stacks/elk/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml jmb12686/filebeat
-```
+Run on a single Docker engine node:
 
 ```bash
-sudo docker run   --name=filebeat   --user=root   --volume="/home/pi/raspi-docker-stacks/elk/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"   --volume="/var/lib/docker/containers:/var/lib/docker/containers:ro"   --volume="/var/run/docker.sock:/var/run/docker.sock:ro" --entrypoint=""  jmb12686/filebeat /usr/share/filebeat/filebeat --strict.perms=false
+sudo docker run -it  \
+  --name=filebeat   --user=root \
+  --volume="PATH_TO_CONFIG/filebeat.yml:/usr/share/filebeat/filebeat.yml" \
+  --volume="/var/lib/docker/containers:/var/lib/docker/containers:ro" \
+  --volume="/var/run/docker.sock:/var/run/docker.sock:ro" \
+  -e ELASTICSEARCH_HOST=elasticsearch-url \
+  -e KIBANA_HOST=kibana-url
+  jmb12686/filebeat \
+  --strict.perms=false
 ```
 
-```bash
-sudo docker run -it  --name=filebeat   --user=root   --volume="/home/pi/raspi-docker-stacks/elk/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml"   --volume="/var/lib/docker/containers:/var/lib/docker/containers:ro"   --volume="/var/run/docker.sock:/var/run/docker.sock:ro" -e ELASTICSEARCH_HOST=localhost jmb12686/filebeat
+Run with with Compose on Docker Swarm:
+
+```yml
+version: "3.7"
+services:
+  filebeat:
+    image: jmb12686/filebeat
+    hostname: "{{.Node.Hostname}}-filebeat"
+    user: root
+    networks:
+      - elk
+    configs:
+      - source: filebeat_config
+        target: /usr/share/filebeat/filebeat.yml
+    volumes:
+      - filebeat:/usr/share/filebeat/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers/:/var/lib/docker/containers/:ro
+      - /var/log/:/var/log/:ro
+    environment:
+      - ELASTICSEARCH_HOST:elasticsearch
+      - KIBANA_HOST:kibana
+    command: ["--strict.perms=false"]
+    deploy:
+      mode: global
+configs:
+  filebeat_config:
+    name: filebeat_config-${CONFIG_VERSION:-0}
+    file: ./filebeat/config/filebeat.yml
+networks:
+  elk:
+    driver: overlay
+volumes:
+  filebeat: {}
 ```
