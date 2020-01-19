@@ -39,7 +39,7 @@ jobs:
           docker rm -f ${{ steps.prepare.outputs.container_name }} > /dev/null 2>&1 || true
           docker run -d --name ${{ steps.prepare.outputs.container_name }} \
           --user=root \
-          --volume="config/example/filebeat.yml:/usr/share/filebeat/filebeat.yml" \
+          --volume="${PWD}/config/example/filebeat.yml:/usr/share/filebeat/filebeat.yml" \
           --volume="/var/lib/docker/containers:/var/lib/docker/containers:ro" \
           --volume="/var/run/docker.sock:/var/run/docker.sock:ro" \
           -e ELASTICSEARCH_HOST=localhost \
