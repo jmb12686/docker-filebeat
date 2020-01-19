@@ -23,8 +23,8 @@ RUN apk update && \
 
 COPY --from=builder /go/src/github.com/elastic/beats/filebeat/filebeat /usr/share/filebeat/filebeat
 RUN ["chmod", "+x", "/usr/share/filebeat/filebeat"]
-# COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-# RUN ["chmod", "+x", "/usr/local/bin/docker-entrypoint.sh"]
-# ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh" ]
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN ["chmod", "+x", "/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh" ]
 WORKDIR /usr/share/filebeat/
 CMD [ "/usr/share/filebeat/filebeat" , "--strict.perms=false"]
