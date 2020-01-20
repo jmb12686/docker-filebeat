@@ -1,6 +1,12 @@
 # docker-filebeat
 
-Containerized, multiarch version of filebeat
+<p align="center">
+  <a href="https://hub.docker.com/r/jmb12686/filebeat/tags?page=1&ordering=last_updated"><img src="https://img.shields.io/github/v/tag/jmb12686/docker-filebeat?label=version&style=flat-square" alt="Latest Version"></a>
+  <a href="https://github.com/jmb12686/docker-filebeat/actions"><img src="https://github.com/jmb12686/docker-filebeat/workflows/build/badge.svg" alt="Build Status"></a>
+  <a href="https://hub.docker.com/r/jmb12686/filebeat/"><img src="https://img.shields.io/docker/stars/jmb12686/filebeat.svg?style=flat-square" alt="Docker Stars"></a>
+  <a href="https://hub.docker.com/r/jmb12686/filebeat/"><img src="https://img.shields.io/docker/pulls/jmb12686/filebeat.svg?style=flat-square" alt="Docker Pulls"></a>
+
+Containerized, multiarch version of [filebeat](https://github.com/elastic/beats/tree/master/filebeat). Designed to be usable within x86-64, armv6, and armv7 based Docker Swarm clusters. Compatible with all Raspberry Pi models (armv6 + armv7).
 
 ## How to Build
 
