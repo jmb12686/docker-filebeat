@@ -1,22 +1,28 @@
+filebeat.inputs:
+- type: log
+  paths:
+    - /var/log/syslog
+    - /var/log/daemon.log
+
 filebeat.autodiscover:
-    providers:
-      - type: docker
-        hints.enabled: true
+  providers:
+    - type: docker
+      hints.enabled: true
+
+processors:
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_locale:
+      format: offset
+  - add_host_metadata:
+      netinfo.enabled: true
   
-  processors:
-    - add_cloud_metadata: ~
-    - add_docker_metadata: ~
-    - add_locale:
-        format: offset
-    - add_host_metadata:
-        netinfo.enabled: true
+output.elasticsearch:
+  hosts: '${ELASTICSEARCH_HOST:elasticsearch:9200}'
   
-  output.elasticsearch:
-    hosts: '${ELASTICSEARCH_HOST:elasticsearch:9200}'
+setup.kibana:
+  host: "${KIBANA_HOST}:5601"
+  protocol: 'http'
   
-  setup.kibana:
-    host: "${KIBANA_HOST}:5601"
-  
-  xpack.monitoring:
-    enabled: true
-    elasticsearch:
+xpack.monitoring:
+  enabled: true
