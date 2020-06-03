@@ -9,7 +9,7 @@ RUN apk update && apk add --no-cache git && \
     apk add --no-cache binutils-gold
 
 RUN mkdir -p $GOPATH/src/github.com/elastic/beats && \
-    git clone --branch v7.7.0 --depth 1 https://github.com/elastic/beats.git $GOPATH/src/github.com/elastic/beats
+    git clone --branch v7.7.1 --depth 1 https://github.com/elastic/beats.git $GOPATH/src/github.com/elastic/beats
 WORKDIR $GOPATH/src/github.com/elastic/beats/filebeat
 RUN make
 # RUN go build
